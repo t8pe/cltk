@@ -11,6 +11,7 @@ from cltk.core.data_types import Doc, Process
 from cltk.core.exceptions import CLTKException
 from cltk.lexicon.lat import LatinLewisLexicon
 from cltk.lexicon.non import OldNorseZoegaLexicon
+from cltk.lexicon.grc import GreekLSJLexicon
 
 __author__ = ["Clément Besnier <clem@clementbesnier.fr>"]
 
@@ -34,6 +35,8 @@ class LexiconProcess(Process):
     def algorithm(self):
         if self.language == "lat":
             lex_class = LatinLewisLexicon()
+        elif self.language == "grc":
+            lex_class = GreekLSJLexicon()
         else:
             raise CLTKException(f"No lookup algorithm for language '{self.language}'.")
         return lex_class
@@ -46,6 +49,8 @@ class LexiconProcess(Process):
                 word.definition = lookup_algo.lookup(word.lemma)
             elif self.language == "non":
                 word.definition = lookup_algo.lookup(word.string)
+            elif self.language == "grc":
+                word.definition = lookup_algo.lookup(word.lemma) # or should it be lemma? We don't know!
             else:
                 raise CLTKException(
                     f"``LexiconProcess()`` not available for language '{self.language}' This should never happen."
@@ -66,7 +71,7 @@ class LatinLexiconProcess(LexiconProcess):
     >>> pipe = Pipeline(description="A custom Latin pipeline", \
     processes=[LatinTokenizationProcess, LatinLemmatizationProcess, LatinLexiconProcess], \
     language=get_lang("lat"))
-    
+
     >>> nlp = NLP(language='lat', custom_pipeline=pipe, suppress_banner=True)
     >>> cltk_doc = nlp.analyze(text=get_example_text("lat"))
     >>> [word.definition[:10] for word in cltk_doc.words][:5]
@@ -80,6 +85,33 @@ class LatinLexiconProcess(LexiconProcess):
     def algorithm(self):
         return LatinLewisLexicon()
 
+class GreekLexiconProcess(LexiconProcess):
+    # rewrite this of course
+    """The default Latin dictionary lookup algorithm.
+
+    >>> from cltk.lexicon.processes import LexiconProcess
+    >>> from cltk.core.data_types import Process, Pipeline
+    >>> from cltk.tokenizers import LatinTokenizationProcess
+    >>> from cltk.lemmatize.processes import LatinLemmatizationProcess
+    >>> from cltk.languages.utils import get_lang
+    >>> from cltk.languages.example_texts import get_example_text
+    >>> from cltk.nlp import NLP
+    >>> pipe = Pipeline(description="A custom Latin pipeline", \
+    processes=[LatinTokenizationProcess, LatinLemmatizationProcess, LatinLexiconProcess], \
+    language=get_lang("lat"))
+
+    >>> nlp = NLP(language='lat', custom_pipeline=pipe, suppress_banner=True)
+    >>> cltk_doc = nlp.analyze(text=get_example_text("lat"))
+    >>> [word.definition[:10] for word in cltk_doc.words][:5]
+    ['', 'est\\n\\n\\n see', 'omnis e (o', '', 'in  old in']
+    """
+
+    description = "Dictionary lookup process for Greek"
+    language = "grc"
+
+    @cachedproperty
+    def algorithm(self):
+        return GreekLSJLexicon()
 
 class OldNorseLexiconProcess(LexiconProcess):
     """The default Latin dictionary lookup algorithm.

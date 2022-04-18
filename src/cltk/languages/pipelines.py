@@ -37,7 +37,7 @@ from cltk.lemmatize.processes import (
     OldEnglishLemmatizationProcess,
     OldFrenchLemmatizationProcess,
 )
-from cltk.lexicon.processes import LatinLexiconProcess, OldNorseLexiconProcess
+from cltk.lexicon.processes import LatinLexiconProcess, OldNorseLexiconProcess, GreekLexiconProcess
 from cltk.ner.processes import (
     GreekNERProcess,
     LatinNERProcess,
@@ -235,6 +235,7 @@ class GreekPipeline(Pipeline):
             GreekEmbeddingsProcess,
             StopsProcess,
             GreekNERProcess,
+            GreekLexiconProcess,
         ]
     )
 
