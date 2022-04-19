@@ -1,5 +1,5 @@
 """Code for querying Greek language dictionaries/lexicons."""
-# THIS IS A WORK IN PROGRESS. Adapting from Clément Besnier's code for Latin.
+#  Adapted from Clément Besnier's code for Latin.
 
 import regex
 import yaml
@@ -9,11 +9,11 @@ from cltk.data.fetch import FetchCorpus
 from cltk.utils.file_operations import make_cltk_path
 from cltk.utils.utils import query_yes_no
 
-__author__ = ["Clément Besnier <clem@clementbesnier.fr>"]
+__author__ = ["Ben Deschamps <ben.deschamps@gmail.com>"]
 
 
-class GreekLSJLexicon:
-    """Access a digital form of LSJ."""
+class GreekLSIntLexicon:
+    """Access a digital form of Liddell & Scott's Intermediate Greek-English Lexicon."""
 
     def __init__(self, interactive: bool = True):
         self.interactive = interactive
@@ -24,7 +24,7 @@ class GreekLSJLexicon:
             self.entries = self._load_entries()
         except FileNotFoundError:
             if self.interactive:
-                dl_msg = f"This part of the CLTK depends upon CITE LSJ LEXICON."
+                dl_msg = f"This part of the CLTK depends upon Liddell & Scott's Intermediate Greek-English Lexicon."
                 print(dl_msg)
                 dl_question = "Do you want to download this?"
                 do_download = query_yes_no(question=dl_question)
@@ -33,7 +33,7 @@ class GreekLSJLexicon:
             if do_download:
                 fetch_corpus = FetchCorpus(language="grc")
                 fetch_corpus.import_corpus(
-                    corpus_name="cltk_grc_ml_lexicon" # this is probably inconsistent and wrong!
+                    corpus_name="cltk_grc_ml_lexicon"
                 )
             else:
                 raise CLTKException(
@@ -46,8 +46,8 @@ class GreekLSJLexicon:
         """Perform match of a lemma against headwords. If more than one match,
         then return the concatenated entries. For example:
 
-        >>> from cltk.lexicon.lat import LatinLewisLexicon
-        >>> lll = LatinLewisLexicon(interactive=False)
+        >>> from cltk.lexicon.grc import GreekLSIntLexicon
+        >>> lll = GreekLSIntLexicon(interactive=False)
         >>> lll.lookup("clemens")[:50]
         'clēmēns entis (abl. -tī; rarely -te, L.), adj. wit'
         >>> all(word in lll.lookup("levis") for word in ["levis","lēvis"]) # Test for concatenated entries
