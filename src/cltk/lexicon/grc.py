@@ -18,7 +18,7 @@ class GreekLSJLexicon:
     def __init__(self, interactive: bool = True):
         self.interactive = interactive
         self.ml_yaml_fp = make_cltk_path(
-            "grc", "lexicon", "cltk_grc_ml_lexicon", "mltesting.yaml"
+            "grc", "lexicon", "cltk_grc_ml_lexicon", "ml.yaml"
         )
         try:
             self.entries = self._load_entries()
